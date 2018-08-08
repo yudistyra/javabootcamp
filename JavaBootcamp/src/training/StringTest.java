@@ -14,6 +14,7 @@ public class StringTest {
         String res;
         
         res = padChars1(5, "x");
+        
         System.out.println(res);
     }
     
