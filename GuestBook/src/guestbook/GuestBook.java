@@ -5,10 +5,12 @@
  */
 package guestbook;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -28,7 +30,8 @@ public class GuestBook {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        File file = new File(FILENAME);
+        BufferedWriter bw = null;
+	FileWriter fw = null;
         
         // a jframe here isn't strictly necessary, but it makes the example a little more real
         JFrame frame = new JFrame("InputDialog Example #1");
@@ -40,38 +43,67 @@ public class GuestBook {
 
         Person p = new Person(name, address, message);
         
-        try (ObjectOutputStream oos
-                = new ObjectOutputStream(new FileOutputStream(file.getAbsoluteFile()))) {
+        try {
+            File file = new File(FILENAME);
 
-            oos.writeObject(p);
+            // if file doesnt exists, then create it
+            if (!file.exists()) {
+                    file.createNewFile();
+            }
+
+            // true = append file
+            fw = new FileWriter(file.getAbsoluteFile(), true);
+            bw = new BufferedWriter(fw);
+
+            bw.write(p.toString());
+
             System.out.println("Done");
 
         } catch (NotSerializableException ex) {
             ex.printStackTrace();
+        } finally {
+
+            try {
+
+                if (bw != null) {
+                    bw.close();
+                }
+
+                if (fw != null) {
+                    fw.close();
+                }
+
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+
+            }
         }
 
-        GuestBook gb = new GuestBook();
-        Person person = gb.readFileObj(file.getAbsolutePath());
+        try {
 
-	System.out.println(person);
-        //System.out.println("Nama " + name + " Alamat " + address);
+            File f = new File(FILENAME);
+
+            BufferedReader b = new BufferedReader(new FileReader(f));
+
+            String readLine = "";
+
+            System.out.println("Reading file using Buffered Reader");
+
+            while ((readLine = b.readLine()) != null) {
+                System.out.println(readLine);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         System.exit(0);
     }
     
-    public Person readFileObj(String filename) {
+    public void readFileObj(String filename) {
 
-        Person person = null;
-
-        try (ObjectInputStream ois
-                = new ObjectInputStream(new FileInputStream(filename))) {
-
-            person = (Person) ois.readObject();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return person;
+       
 
     }
     

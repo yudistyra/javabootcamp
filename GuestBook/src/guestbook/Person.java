@@ -48,7 +48,7 @@ public class Person implements Serializable {
 
     @Override
     public String toString() {
-        return name + ", " + address + " : " + message;
+        return name + "|" + address + "|" + message + "\n";
     }
     
     
