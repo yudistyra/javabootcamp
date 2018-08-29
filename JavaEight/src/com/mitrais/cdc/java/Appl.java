@@ -15,10 +15,10 @@ import java.util.concurrent.Executors;
 public class Appl {
 
     public Appl() {
-        ExecutorService taskList = Executors.newFixedThreadPool(100);
+        ExecutorService taskList = Executors.newFixedThreadPool(2);
         taskList.execute(new Counter(this, 6));
         taskList.execute(new Counter(this, 5));
-        taskList.execute(new Counter(this, 6));
+        taskList.execute(new Counter(this, 4));
         taskList.shutdown();
     }
     
